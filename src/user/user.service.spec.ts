@@ -12,7 +12,7 @@ describe('UserService', () => {
     findOne: jest.fn(),
     createUser: jest.fn(),
     save: jest.fn(),
-    update: jest.fn(),
+    editUser: jest.fn(),
     delete: jest.fn(),
   };
 
@@ -35,7 +35,7 @@ describe('UserService', () => {
     mockUsersRepository.findOne.mockReset();
     mockUsersRepository.createUser.mockReset();
     mockUsersRepository.save.mockReset();
-    mockUsersRepository.update.mockReset();
+    mockUsersRepository.editUser.mockReset();
     mockUsersRepository.delete.mockReset();
   });
 
@@ -77,6 +77,31 @@ describe('UserService', () => {
       expect(savedUser).toMatchObject(user);
       expect(mockUsersRepository.createUser).toHaveBeenCalledTimes(1);
       expect(mockUsersRepository.createUser).toBeCalledTimes(1);
+    });
+  });
+  describe('update user', () => {
+    it('should update a User', async () => {
+      const user = TestUtil.giveMeValidUser();
+      const updateUser = {
+        first_name: 'Ivan',
+        last_name: 'Pogosov',
+        age: 23,
+        date_birthday: '22-12-1997',
+        technology: 'NodeJS',
+        skills: 'Back-End',
+        id: 1,
+      };
+      mockUsersRepository.findOne.mockReturnValue(user);
+      const updateU = await service.getUser(1);
+      mockUsersRepository.editUser.mockReturnValue({
+        ...user,
+        ...updateUser,
+      });
+      const resUser = await service.editUser(updateU.id, updateUser);
+      console.log(resUser);
+      expect(resUser).toMatchObject(updateUser);
+      expect(mockUsersRepository.findOne).toBeCalledTimes(2);
+      expect(mockUsersRepository.editUser).toBeCalledTimes(1);
     });
   });
 });
