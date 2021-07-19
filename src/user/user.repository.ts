@@ -14,6 +14,7 @@ export class UserRepository extends Repository<User> {
     user.technology = createUser.technology;
     user.skills = createUser.skills;
     await user.save();
+    console.log(user);
     return user;
   }
 

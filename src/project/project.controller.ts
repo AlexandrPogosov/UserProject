@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDTO } from './dto/create-project.dto';
 import { Project } from './project.entity';
@@ -7,14 +15,14 @@ import { Project } from './project.entity';
 export class ProjectController {
   constructor(private projectService: ProjectService) {}
 
-  @Post('create')
+  @Post('')
   public async createProject(
     @Body() createProjectDto: CreateProjectDTO,
   ): Promise<Project> {
     return this.projectService.createProject(createProjectDto);
   }
 
-  @Get('all')
+  @Get('')
   public async getProjects(): Promise<Project[]> {
     return this.projectService.getProjects();
   }
@@ -24,7 +32,7 @@ export class ProjectController {
     return await this.projectService.getProject(projectId);
   }
 
-  @Patch('/edit/:projectId')
+  @Patch('/:projectId')
   public async editProject(
     @Body() createProjectDto: CreateProjectDTO,
     @Param('projectID') projectId: number,
@@ -32,7 +40,7 @@ export class ProjectController {
     return await this.projectService.editProject(projectId, createProjectDto);
   }
 
-  @Delete('/delete/:projectId')
+  @Delete('/:projectId')
   public async deleteProject(@Param('projectId') projectId: number) {
     return await this.projectService.deleteProject(projectId);
   }

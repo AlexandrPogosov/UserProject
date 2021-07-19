@@ -18,4 +18,17 @@ export class UserProjectRepository extends Repository<UserProject> {
     await userProject.save();
     return userProject;
   }
+
+  public async editUserProject(
+    createUserProjectDto: CreateUserProjectDto,
+    editedUserProduct: UserProject,
+  ): Promise<UserProject> {
+    const createUserProject = createUserProjectDto;
+    editedUserProduct.userId = createUserProject.userId;
+    editedUserProduct.projectId = createUserProject.projectId;
+    editedUserProduct.start_on_project = createUserProject.start_on_project;
+    editedUserProduct.end_on_project = createUserProject.end_on_project;
+    await editedUserProduct.save();
+    return editedUserProduct;
+  }
 }

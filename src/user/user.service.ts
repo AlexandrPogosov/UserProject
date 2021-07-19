@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Module, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { CreateUserDTO } from './dto/create-user.dto';
@@ -20,9 +20,7 @@ export class UserService {
   }
 
   public async getUser(userId: number): Promise<User> {
-    const foundUser = await this.userRepository.findOne(userId, {
-      relations: ['userProjectEntity'],
-    });
+    const foundUser = await this.userRepository.findOne(userId);
     if (!foundUser) {
       throw new NotFoundException('Product not found');
     }

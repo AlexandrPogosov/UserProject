@@ -4,6 +4,7 @@ import {
   Column,
   Entity,
   OneToMany,
+  JoinTable,
 } from 'typeorm';
 import { UserProject } from '../user-project/userProject.entity';
 
