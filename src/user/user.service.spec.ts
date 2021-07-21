@@ -8,7 +8,6 @@ import { UserProject } from '../user-project/userProject.entity';
 
 describe('ProductService', () => {
   let userService;
-  let userRepository;
 
   beforeAll(async () => {
     await createConnection({
@@ -21,9 +20,8 @@ describe('ProductService', () => {
     });
   });
 
-  beforeEach(async () => {
+  it('create User', async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [Repository],
       providers: [
         UserService,
         {
@@ -33,10 +31,7 @@ describe('ProductService', () => {
       ],
     }).compile();
     userService = module.get<UserService>(UserService);
-    userRepository = module.get<Repository<User>>(UserRepository);
-  });
 
-  it('create User', async () => {
     const user = new User();
     user.first_name = 'Alexandr';
     user.last_name = 'Pogosov';
@@ -47,8 +42,26 @@ describe('ProductService', () => {
     const createdUser = await userService.createUser(user);
     expect(createdUser).toMatchObject(user);
   });
+
   it('return list all Users', async () => {
+    const mockUserRepository = () => ({
+      find: jest.fn(),
+    });
+
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [Repository],
+      providers: [
+        UserService,
+        {
+          provide: UserRepository,
+          useFactory: mockUserRepository,
+        },
+      ],
+    }).compile();
+    userService = module.get<UserService>(UserService);
+
     const listUser = await userService.getUsers();
+    expect(listUser).toBeUndefined();
   });
 });
 // import { UserRepository } from './user.repository';
