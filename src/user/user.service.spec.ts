@@ -1,107 +1,87 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { UserRepository } from './user.repository';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import TestUtil from '../common/TestUtily';
-import { NotFoundException } from '@nestjs/common';
+import { User } from './user.entity';
+import { createConnection, Repository } from 'typeorm';
+import { Project } from '../project/project.entity';
+import { UserProject } from '../user-project/userProject.entity';
 
-describe('UserService', () => {
-  let service: UserService;
-  const mockUsersRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    createUser: jest.fn(),
-    save: jest.fn(),
-    editUser: jest.fn(),
-    delete: jest.fn(),
-  };
+describe('ProductService', () => {
+  let userService;
+  let userRepository;
 
   beforeAll(async () => {
+    await createConnection({
+      type: 'sqlite',
+      database: ':memory:',
+      dropSchema: true,
+      entities: [User, Project, UserProject],
+      synchronize: true,
+      logging: false,
+    });
+  });
+
+  beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [Repository],
       providers: [
         UserService,
         {
-          provide: getRepositoryToken(UserRepository),
-          useValue: mockUsersRepository,
+          provide: UserRepository,
+          useClass: UserRepository,
         },
       ],
     }).compile();
-
-    service = module.get<UserService>(UserService);
+    userService = module.get<UserService>(UserService);
+    userRepository = module.get<Repository<User>>(UserRepository);
   });
 
-  beforeEach(() => {
-    mockUsersRepository.find.mockReset();
-    mockUsersRepository.findOne.mockReset();
-    mockUsersRepository.createUser.mockReset();
-    mockUsersRepository.save.mockReset();
-    mockUsersRepository.editUser.mockReset();
-    mockUsersRepository.delete.mockReset();
+  it('create User', async () => {
+    const user = new User();
+    user.first_name = 'Alexandr';
+    user.last_name = 'Pogosov';
+    user.age = 23;
+    user.date_birthday = '22-12-1997';
+    user.technology = 'NodeJS';
+    user.skills = 'Back-End';
+    const createdUser = await userService.createUser(user);
+    expect(createdUser).toMatchObject(user);
   });
-
-  it('should be return user', async () => {
-    expect(service).toBeDefined();
-  });
-
-  describe('findAllUsers', () => {
-    it('should be list all Users', async () => {
-      const user = TestUtil.giveMeValidUser();
-      mockUsersRepository.find.mockReturnValue([user, user]);
-      const users = await service.getUsers();
-      expect(users).toHaveLength(2);
-      expect(mockUsersRepository.find).toHaveBeenCalledTimes(1);
-    });
-  });
-  describe('find User by Id', () => {
-    it('should be User', async () => {
-      const user = TestUtil.giveMeValidUser();
-      mockUsersRepository.findOne.mockReturnValue(user);
-      const userFound = await service.getUser(1);
-      expect(userFound).toMatchObject({ first_name: 'Alexandr' });
-      expect(mockUsersRepository.findOne).toHaveBeenCalledTimes(1);
-    });
-    it('should return a exception when does not to find a user', async () => {
-      mockUsersRepository.findOne.mockReturnValue(null);
-      await expect(service.getUser(3)).rejects.toBeInstanceOf(
-        NotFoundException,
-      );
-      expect(mockUsersRepository.findOne).toHaveBeenCalledTimes(1);
-    });
-  });
-  describe('create user', () => {
-    it('should create a User', async () => {
-      const user = TestUtil.giveMeValidUser();
-      mockUsersRepository.save.mockReturnValue(user);
-      mockUsersRepository.createUser.mockReturnValue(user);
-      const savedUser = await service.createUser(user);
-      expect(savedUser).toMatchObject(user);
-      expect(mockUsersRepository.createUser).toHaveBeenCalledTimes(1);
-      expect(mockUsersRepository.createUser).toBeCalledTimes(1);
-    });
-  });
-  describe('update user', () => {
-    it('should update a User', async () => {
-      const user = TestUtil.giveMeValidUser();
-      const updateUser = {
-        first_name: 'Ivan',
-        last_name: 'Pogosov',
-        age: 23,
-        date_birthday: '22-12-1997',
-        technology: 'NodeJS',
-        skills: 'Back-End',
-        id: 1,
-      };
-      mockUsersRepository.findOne.mockReturnValue(user);
-      const updateU = await service.getUser(1);
-      mockUsersRepository.editUser.mockReturnValue({
-        ...user,
-        ...updateUser,
-      });
-      const resUser = await service.editUser(updateU.id, updateUser);
-      console.log(resUser);
-      expect(resUser).toMatchObject(updateUser);
-      expect(mockUsersRepository.findOne).toBeCalledTimes(2);
-      expect(mockUsersRepository.editUser).toBeCalledTimes(1);
-    });
+  it('return list all Users', async () => {
+    const listUser = await userService.getUsers();
   });
 });
+// import { UserRepository } from './user.repository';
+// import { UserService } from './user.service';
+// import { createConnection, Repository } from 'typeorm';
+// import { Project } from '../project/project.entity';
+// import { UserProject } from '../user-project/userProject.entity';
+// import { User } from './user.entity';
+//
+// describe('UserService', () => {
+//   let userService: UserService;
+//   let userRepository: UserRepository;
+//
+//   beforeAll(async () => {
+//     await createConnection({
+//       type: 'sqlite',
+//       database: ':memory:',
+//       dropSchema: true,
+//       entities: [User, Project, UserProject],
+//       synchronize: true,
+//       logging: false,
+//     });
+//   });
+//
+//   beforeEach(() => {
+//     userRepository = new UserRepository();
+//     userService = new UserService(userRepository);
+//   });
+//
+//   describe('findAll', () => {
+//     it('should return an array of cats', async () => {
+//       const allUsers = await userService.getUsers();
+//       console.log(allUsers);
+//     });
+//   });
+// });
