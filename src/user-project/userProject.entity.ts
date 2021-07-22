@@ -2,20 +2,20 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinTable,
   ManyToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Project } from '../project/project.entity';
-import { JoinTable } from 'typeorm/browser';
 
 @Entity()
 export class UserProject extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: false })
+  @Column({ unique: false, select: false })
   userId: number;
 
   @Column()
@@ -28,8 +28,8 @@ export class UserProject extends BaseEntity {
   end_on_project: string;
 
   @ManyToOne(() => User, (user) => user.userProjectEntity)
-  public user!: User;
+  public user!: any[];
 
   @ManyToOne(() => Project, (project) => project.userProjectEntity)
-  public project!: Project;
+  public project!: any[];
 }

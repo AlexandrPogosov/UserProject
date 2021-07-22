@@ -7,6 +7,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { UserProject } from '../user-project/userProject.entity';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class Project extends BaseEntity {
@@ -19,9 +20,16 @@ export class Project extends BaseEntity {
   @Column()
   company_name: string;
 
-  @OneToMany(
-    () => UserProject,
-    (userProjectEntity) => userProjectEntity.project,
-  )
-  public userProjectEntity!: UserProject[];
+  @OneToMany(() => UserProject, (user) => user.user)
+  public users!: any[];
+
+  @OneToMany(() => UserProject, (ud) => ud.project)
+  @JoinTable({
+    name: 'user_project',
+    joinColumn: {
+      name: 'id',
+      referencedColumnName: 'user_project.projectId',
+    },
+  })
+  public userProjectEntity!: Array<UserProject>;
 }

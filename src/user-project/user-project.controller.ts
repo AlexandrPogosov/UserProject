@@ -26,23 +26,14 @@ export class UserProjectController {
   }
 
   @Get('/:userId')
-  public async getUsersWithProjects(@Param('userId') userId: number): Promise<{
-    skills: string;
-    projects: any[];
-    date_birthday: string;
-    last_name: string;
-    technology: string;
-    first_name: string;
-    age: number;
-  }> {
+  public async getUsersWithProjects(@Param('userId') userId: number): Promise<unknown> {
     return await this.userProjectService.findUserWithProjects(userId);
   }
-
+  // Promise<{ company_name: string; name: string; users: any[] }>
   @Get('/project/:projectId')
-  public async getProjectWithUsers(
-    @Param('projectId') projectId: number,
-  ): Promise<{ company_name: string; name: string; users: any[] }> {
-    return await this.userProjectService.findProjectWithUsers(projectId);
+  public async getProjectWithUsers(@Param('projectId') projectId: number) {
+    return this.userProjectService.findProjectWithUsers(projectId);
+    //return await this.userProjectService.findProjectWithUsers(projectId);
   }
 
   @Patch('/:userId/:projectId')

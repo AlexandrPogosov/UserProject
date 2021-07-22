@@ -18,6 +18,7 @@ import { UserProjectModule } from './user-project/user-project.module';
       database: 'db',
       entities: [join(__dirname, '**', '*.entity.{ts,js}')],
       synchronize: true,
+      logging: true
     }),
     UserModule,
     ProjectModule,

@@ -31,6 +31,13 @@ export class User extends BaseEntity {
   @Column()
   skills: string;
 
-  @OneToMany(() => UserProject, (userProjectEntity) => userProjectEntity.user)
-  public userProjectEntity!: UserProject[];
+  @OneToMany(() => UserProject, (ud) => ud.user)
+  @JoinTable({
+    name: 'user_project',
+    joinColumn: {
+      name: 'id',
+      referencedColumnName: 'user_project.userId',
+    },
+  })
+  public userProjectEntity!: Array<UserProject>;
 }
