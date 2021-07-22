@@ -20,10 +20,10 @@ export class Project extends BaseEntity {
   @Column()
   company_name: string;
 
-  @OneToMany(() => UserProject, (user) => user.user)
+  @OneToMany(() => UserProject, (userProject) => userProject.user)
   public users!: any[];
 
-  @OneToMany(() => UserProject, (ud) => ud.project)
+  @OneToMany(() => UserProject, (userProject) => userProject.project)
   @JoinTable({
     name: 'user_project',
     joinColumn: {

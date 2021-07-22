@@ -3,13 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserProjectRepository } from './userProject.repository';
 import { CreateUserProjectDto } from './dto/create-userProject.dto';
 import { UserProject } from './userProject.entity';
-import {
-  createQueryBuilder,
-  getConnection,
-  getConnectionManager,
-  getRepository,
-} from 'typeorm';
 import { Project } from '../project/project.entity';
+import { createQueryBuilder, getConnection } from 'typeorm';
 import { User } from '../user/user.entity';
 
 @Injectable()
@@ -65,109 +60,25 @@ export class UserProjectService {
     // }
     // return result;
   }
+
   // Promise<{ company_name: string; name: string; users: any[] }>
   public async findProjectWithUsers(projectID: number) {
-    // const res = await this.userProjectRepository.find({
-    //   relations: ['project', 'user'],
-    //   where: {
-    //     projectId: projectID,
-    //   },
-    // });
-    // // console.log(res);
-    //
+    const users = await getConnection()
+      .createQueryBuilder()
+      .from(User, 'users')
+      .innerJoin('users.userProjectEntity', 'userProjects')
+      .where('userProjects.projectId = :projectID', { projectID })
+      .select('users')
+      .getMany();
 
-    // const res = await this.userProjectRepository
-    //   .createQueryBuilder()
-    //   .innerJoinAndMapOne(
-    //     'UserProject.project',
-    //     'project',
-    //     'p',
-    //   )
-    //   .innerJoinAndMapMany(
-    //     'UserProject.user',
-    //     'user',
-    //     'u',
-    //     `UserProject.projectId=${projectID}`,
-    //   )
-    //   .where(`UserProject.projectId=${projectID}`)
-    //   //.where(`UserProject.projectId = ${projectID}`)
-    //   .getOne();
-    console.log(projectID);
-    // console.log(await getConnection()
-    //   .createQueryBuilder()
-    //   .relation(UserProject, 'project')
-    //   .of(projectID)
-    //   .loadMany()
-    // )
-    // const res = await this.userProjectRepository.manager.findOne(UserProject);
-    // res.project = await getConnection()
-    //   .createQueryBuilder()
-    //   .relation(Project, 'userProjectEntity')
-    //   .of(projectID)
-    //   .loadOne();
-    // res.user = await getConnection()
-    //   .createQueryBuilder()
-    //   .relation(UserProject, 'user')
-    //   // .of(projectID)
-    //   .loadMany();
-    const res = await
-      createQueryBuilder(Project)
-      .for(projectID)
-      .relation(Project, 'users')
+    const userProjects = await getConnection()
+      .createQueryBuilder()
+      .from(UserProject, 'userProjects')
+      .where('userProjects.projectId = :projectID', { projectID })
+      .select('userProjects')
+      .getMany();
 
-      .loadMany();
-    // const res = await createQueryBuilder('Project')
-    //   .innerJoinAndSelect('Project.userProjectEntity', 'UserProject')
-    //   .innerJoinAndSelect('UserProject.user', 'user')
-    //   .where(`Project.id = ${projectID}`)
-    //   .getOne();
-    // const projectRepository = await getRepository(Project);
-    // // @ts-ignore
-    // const res = projectRepository.find({
-    //   relations: ['userProjectEntity', 'userProjectEntity.user'],
-    //   where: {
-    //     id: projectID,
-    //   },
-    // });
-
-    // const res = await getRepository(Project)
-    //   .createQueryBuilder('Project')
-    //   .leftJoinAndSelect('Project.userProjectEntity', 'UserProject')
-    //   .leftJoinAndSelect('UserProject.user', 'user')
-    //   .where(`Project.id = ${projectID}`)
-    //   .getMany();
-    console.log(res);
-    // res.user = await getConnection()
-    //   .createQueryBuilder()
-    //   .relation(UserProject, 'user')
-    //   .of(UserProject)
-    //   .loadMany();
-    // res.project = await getConnection()
-    //   .createQueryBuilder()
-    //   .relation(UserProject, 'project')
-    //   .of(UserProject)
-    //   .loadOne();
-    // if (res.length === 0) {
-    //   throw new NotFoundException('User not found');
-    // }
-
-    // const users = [];
-    // const result = {
-    //   name: res[0].project.name,
-    //   company_name: res[0].project.company_name,
-    //   users: users,
-    // };
-    // for (let i = 0; i < res.length; i++) {
-    //   result.users.push({
-    //     last_name: res[i].user.last_name,
-    //     first_name: res[i].user.first_name,
-    //     date_birthday: res[i].user.date_birthday,
-    //     age: res[i].user.age,
-    //     skills: res[i].user.skills,
-    //     technology: res[i].user.technology,
-    //   });
-    // }
-    return res;
+    console.log({ users, userProjects });
   }
 
   public async editUserProject(
