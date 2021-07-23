@@ -7,16 +7,25 @@ import {
   JoinTable,
 } from 'typeorm';
 import { UserProject } from '../user-project/userProject.entity';
-import { User } from '../user/user.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Project extends BaseEntity {
+  @ApiProperty({
+    type: Number,
+  })
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({
+    type: String,
+  })
   @Column()
   name: string;
 
+  @ApiProperty({
+    type: String,
+  })
   @Column()
   company_name: string;
 

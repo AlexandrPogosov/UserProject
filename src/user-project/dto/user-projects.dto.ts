@@ -1,7 +1,15 @@
-import { IsString, IsNumber, IsDate } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { CreateProjectDTO } from '../../project/dto/create-project.dto';
+import { Project } from '../../project/project.entity';
 
-export class CreateUserDTO {
+export class UserProjectsDto {
+  @ApiProperty({
+    type: Number,
+  })
+  @IsNumber()
+  id: number;
+
   @ApiProperty({
     type: String,
   })
@@ -37,4 +45,10 @@ export class CreateUserDTO {
   })
   @IsString()
   skills: string;
+
+  @ApiProperty({
+    type: Project,
+    isArray: true,
+  })
+  projects: Project[];
 }

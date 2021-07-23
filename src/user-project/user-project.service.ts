@@ -4,7 +4,7 @@ import { UserProjectRepository } from './userProject.repository';
 import { CreateUserProjectDto } from './dto/create-userProject.dto';
 import { UserProject } from './userProject.entity';
 import { Project } from '../project/project.entity';
-import { createQueryBuilder, getConnection } from 'typeorm';
+import { getConnection } from 'typeorm';
 import { User } from '../user/user.entity';
 
 @Injectable()
@@ -22,63 +22,71 @@ export class UserProjectService {
     );
   }
 
-  public async findUserWithProjects(userId: number): Promise<unknown> {
-    const res = await createQueryBuilder('User')
-      .innerJoinAndSelect('User.userProjectEntity', 'UserProject')
-      .innerJoinAndSelect('UserProject.project', 'project')
-      .where(`User.id = ${userId}`)
+  public async findUserWithProjects(userId: number) {
+    const user = await getConnection()
+      .createQueryBuilder()
+      .from(User, 'users')
+      .innerJoin('users.userProjectEntity', 'userProjects')
+      .where('userProjects.userId = :userId', { userId })
+      .select('users')
       .getOne();
-    console.log(res);
-    return res;
-    // const res = await this.userProjectRepository.find({
-    //   where: {
-    //     userId,
-    //   },
-    //   relations: ['user', 'project'],
-    // });
-    // if (res.length === 0) {
-    //   throw new NotFoundException('User not found');
-    // }
-    // const projects = [];
-    // const result = {
-    //   last_name: res[0].user.last_name,
-    //   first_name: res[0].user.first_name,
-    //   age: res[0].user.age,
-    //   date_birthday: res[0].user.date_birthday,
-    //   skills: res[0].user.skills,
-    //   technology: res[0].user.technology,
-    //   projects: projects,
-    // };
-    //
-    // for (let i = 0; i < res.length; i++) {
-    //   projects.push({
-    //     name: res[i].project.name,
-    //     company_name: res[i].project.company_name,
-    //     start: res[i].start_on_project,
-    //     end: res[i].end_on_project,
-    //   });
-    // }
-    // return result;
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    user.projects = await getConnection()
+      .createQueryBuilder()
+      .from(Project, 'projects')
+      .innerJoin('projects.userProjectEntity', 'userProjects')
+      .where('userProjects.userId = :userId', { userId })
+      .select('projects')
+      .getMany();
+    return user;
   }
 
-  // Promise<{ company_name: string; name: string; users: any[] }>
+  public async findProjectWithUsersByName(name: string) {
+    const project = await getConnection()
+      .createQueryBuilder()
+      .from(Project, 'projects')
+      .innerJoin('projects.userProjectEntity', 'userProjects')
+      .where('projects.name = :name', { name })
+      .select('projects')
+      .getOne();
+    if (!project) {
+      throw new NotFoundException();
+    }
+
+    project.users = await getConnection()
+      .createQueryBuilder()
+      .from(User, 'users')
+      .innerJoin('users.userProjectEntity', 'userProjects')
+      .where(`userProjects.projectId = ${project.id}`)
+      .select('users')
+      .getMany();
+    //console.log(project);
+    return project;
+  }
+
   public async findProjectWithUsers(projectID: number) {
-    const users = await getConnection()
+    const project = await getConnection()
+      .createQueryBuilder()
+      .from(Project, 'projects')
+      .innerJoin('projects.userProjectEntity', 'userProjects')
+      .where('userProjects.projectId = :projectID', { projectID })
+      .select('projects')
+      .getOne();
+    if (!project) {
+      throw new NotFoundException();
+    }
+
+    project.users = await getConnection()
       .createQueryBuilder()
       .from(User, 'users')
       .innerJoin('users.userProjectEntity', 'userProjects')
       .where('userProjects.projectId = :projectID', { projectID })
       .select('users')
       .getMany();
-
-    const userProjects = await getConnection()
-      .createQueryBuilder()
-      .from(UserProject, 'userProjects')
-      .where('userProjects.projectId = :projectID', { projectID })
-      .select('userProjects')
-      .getMany();
-
-    console.log({ users, userProjects });
+    return project;
   }
 
   public async editUserProject(
