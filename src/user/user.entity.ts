@@ -63,13 +63,13 @@ export class User extends BaseEntity {
   @Column()
   skills: string;
 
-  @Field(() => [Project!], {
+  @Field(() => [Project], {
     nullable: true,
   })
   @OneToMany(() => UserProject, (userProject) => userProject.project)
-  public projects!: Project[];
+  public projects: Project[];
 
-  @Field((type) => [UserProject!], {
+  @Field((type) => [UserProject], {
     nullable: true,
   })
   @OneToMany(() => UserProject, (ud) => ud.user)
@@ -80,5 +80,5 @@ export class User extends BaseEntity {
       referencedColumnName: 'user_project.userId',
     },
   })
-  public userProjectEntity!: UserProject[];
+  public userProjectEntity: UserProject[];
 }

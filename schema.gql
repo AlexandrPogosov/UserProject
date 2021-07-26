@@ -34,4 +34,10 @@ type User {
 
 type Query {
   allUsers: [User!]!
+  getUser(userId: Float!): User!
+  findUsersWithProjectsAll: [User!]!
+}
+
+type Mutation {
+  editUser(userId: Float!): User!
 }

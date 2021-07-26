@@ -5,6 +5,7 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
 import { getConnection } from 'typeorm';
 import { Project } from '../project/project.entity';
+import { UserProjectsDto } from '../user-project/dto/user-projects.dto';
 
 @Injectable()
 export class UserService {
@@ -29,7 +30,7 @@ export class UserService {
     return foundUser;
   }
 
-  public async findUsersWithProjectsAll() {
+  public async findUsersWithProjectsAll(): Promise<User[]> {
     const users = await getConnection()
       .createQueryBuilder()
       .from(User, 'users')

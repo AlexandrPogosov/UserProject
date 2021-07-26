@@ -35,13 +35,13 @@ export class Project extends BaseEntity {
   @Column()
   company_name: string;
 
-  @Field(() => [User!], {
+  @Field(() => [User], {
     nullable: true,
   })
   @OneToMany(() => UserProject, (userProject) => userProject.user)
-  public users!: any[];
+  public users: User[];
 
-  @Field(() => [UserProject!], {
+  @Field(() => [UserProject], {
     nullable: true,
   })
   @OneToMany(() => UserProject, (userProject) => userProject.project)
@@ -52,5 +52,5 @@ export class Project extends BaseEntity {
       referencedColumnName: 'user_project.projectId',
     },
   })
-  public userProjectEntity!: UserProject[];
+  public userProjectEntity: UserProject[];
 }
