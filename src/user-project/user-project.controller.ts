@@ -8,7 +8,6 @@ import {
   Param,
   Patch,
   Post,
-  Req,
 } from '@nestjs/common';
 import { UserProjectService } from './user-project.service';
 import { CreateUserProjectDto } from './dto/create-userProject.dto';
@@ -95,7 +94,7 @@ export class UserProjectController {
     type: Error,
   })
   @Get('/findByProjectName/:name')
-  public async getUsersWithProjectsByName(@Param('name') name: string) {
+  public async getProjectWithUsersByName(@Param('name') name: string) {
     return await this.userProjectService.findProjectWithUsersByName(name);
   }
 

@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
+import { getConnection } from 'typeorm';
+import { Project } from '../project/project.entity';
 
 @Injectable()
 export class UserService {
@@ -25,6 +27,28 @@ export class UserService {
       throw new NotFoundException('Product not found');
     }
     return foundUser;
+  }
+
+  public async findUsersWithProjectsAll() {
+    const users = await getConnection()
+      .createQueryBuilder()
+      .from(User, 'users')
+      .innerJoin('users.userProjectEntity', 'userProjects')
+      .select('users')
+      .getMany();
+    if (!users) {
+      throw new NotFoundException();
+    }
+    for (const user of users) {
+      user.projects = await getConnection()
+        .createQueryBuilder()
+        .from(Project, 'projects')
+        .innerJoin('projects.userProjectEntity', 'userProjects')
+        .where(`userProjects.userId = ${user.id}`)
+        .select('projects')
+        .getMany();
+    }
+    return users;
   }
 
   public async editUser(

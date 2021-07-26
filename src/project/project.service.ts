@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './project.entity';
 import { CreateProjectDTO } from './dto/create-project.dto';
 import { ProjectRepository } from './project.repository';
+import { getConnection } from "typeorm";
+import { User } from "../user/user.entity";
 
 @Injectable()
 export class ProjectService {
@@ -27,6 +29,28 @@ export class ProjectService {
       throw new NotFoundException('Project not found');
     }
     return foundProject;
+  }
+
+  public async findProjectsWithUsersAll() {
+    const projects = await getConnection()
+      .createQueryBuilder()
+      .from(Project, 'projects')
+      .innerJoin('projects.userProjectEntity', 'userProjects')
+      .select('projects')
+      .getMany();
+    if (!projects) {
+      throw new NotFoundException();
+    }
+    for (const project of projects) {
+      project.users = await getConnection()
+        .createQueryBuilder()
+        .from(User, 'users')
+        .innerJoin('users.userProjectEntity', 'userProjects')
+        .where(`userProjects.projectId = ${project.id}`)
+        .select('users')
+        .getMany();
+    }
+    return projects;
   }
 
   public async editProject(

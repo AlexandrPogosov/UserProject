@@ -63,7 +63,6 @@ export class UserProjectService {
       .where(`userProjects.projectId = ${project.id}`)
       .select('users')
       .getMany();
-    //console.log(project);
     return project;
   }
 

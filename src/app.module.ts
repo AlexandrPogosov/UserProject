@@ -6,9 +6,15 @@ import { join } from 'path';
 import { UserModule } from './user/user.module';
 import { ProjectModule } from './project/project.module';
 import { UserProjectModule } from './user-project/user-project.module';
+import { GraphQLModule } from '@nestjs/graphql';
 
 @Module({
   imports: [
+    GraphQLModule.forRoot({
+      autoSchemaFile: 'schema.gql',
+      playground: true,
+      installSubscriptionHandlers: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',

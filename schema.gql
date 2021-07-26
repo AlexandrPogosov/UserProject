@@ -1,0 +1,37 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Project {
+  id: ID!
+  name: String!
+  company_name: String!
+  users: [User!]
+  userProjectEntity: [UserProject!]
+}
+
+type UserProject {
+  id: ID!
+  userId: Int!
+  projectId: Int!
+  start_on_project: String!
+  end_on_project: String!
+  user: [User!]
+  project: [Project!]
+}
+
+type User {
+  id: ID!
+  last_name: String!
+  first_name: String!
+  date_birthday: String!
+  age: Int!
+  technology: String!
+  skills: String!
+  projects: [Project!]
+  userProjectEntity: [UserProject!]
+}
+
+type Query {
+  allUsers: [User!]!
+}

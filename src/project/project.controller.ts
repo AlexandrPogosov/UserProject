@@ -23,6 +23,7 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
+import { ProjectUsersDto } from '../user-project/dto/project-users.dto';
 
 @ApiTags('Projects')
 @Controller('projects')
@@ -68,6 +69,24 @@ export class ProjectController {
   @Header('Content-Type', 'application/json; charset=UTF-8')
   public async getProjects(): Promise<Project[]> {
     return this.projectService.getProjects();
+  }
+
+  @ApiOperation({
+    summary: 'Get all projects with users in system',
+  })
+  @ApiOkResponse({
+    type: ProjectUsersDto,
+    isArray: true,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request.',
+    type: Error,
+  })
+  @Get('/users')
+  @Header('Cache-Control', 'no-store, no-cache, must-revalidate')
+  @Header('Content-Type', 'application/json; charset=UTF-8')
+  public async getProjectsWithUsers() {
+    return this.projectService.findProjectsWithUsersAll();
   }
 
   @ApiOperation({
