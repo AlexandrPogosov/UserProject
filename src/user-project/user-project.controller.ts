@@ -80,7 +80,7 @@ export class UserProjectController {
   }
 
   @ApiOperation({
-    summary: 'Get project with users in system',
+    summary: 'Get project with users by project name in system',
   })
   @ApiParam({
     name: 'name',
