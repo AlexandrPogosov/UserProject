@@ -1,8 +1,8 @@
 import { IsString, IsNumber, IsDate } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 
-@ObjectType()
+@InputType()
 export class CreateUserDTO {
   @Field()
   @ApiProperty({

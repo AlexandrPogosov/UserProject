@@ -36,8 +36,42 @@ type Query {
   allUsers: [User!]!
   getUser(userId: Float!): User!
   findUsersWithProjectsAll: [User!]!
+  getProjects: [Project!]!
+  getProject(projectId: Float!): Project!
+  findProjectsWithUsersAll: [Project!]!
+  findUserWithProjects(userId: Float!): UserProject!
+  findProjectWithUsersByName(name: String!): UserProject!
+  findProjectWithUsers(projectId: Float!): UserProject!
 }
 
 type Mutation {
-  editUser(userId: Float!): User!
+  createUser(input: CreateUserDTO!): User!
+  editUser(input: CreateUserDTO!, userId: Float!): User!
+  deleteUser(projectId: Float!): Project!
+  createProject(input: CreateProjectDTO!): Project!
+  editProject(input: CreateProjectDTO!, projectId: Float!): Project!
+  createUserProject(input: CreateUserProjectDto!): UserProject!
+  editUserProject(input: CreateUserProjectDto!, projectId: Float!, userId: Float!): UserProject!
+  deleteUserProject(projectId: Float!, userId: Float!): UserProject!
+}
+
+input CreateUserDTO {
+  last_name: String!
+  first_name: String!
+  date_birthday: String!
+  age: Int!
+  technology: String!
+  skills: String!
+}
+
+input CreateProjectDTO {
+  name: String!
+  company_name: String!
+}
+
+input CreateUserProjectDto {
+  start_on_project: String!
+  end_on_project: String!
+  userId: Float!
+  projectId: Float!
 }
