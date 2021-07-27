@@ -26,13 +26,12 @@ export class AuthService {
     if (candidate) {
       throw new BadRequestException();
     }
-    const hashPassword = await bcrypt.hash(userDto.password, 5);
-    userDto.password = hashPassword;
+    userDto.password = await bcrypt.hash(userDto.password, 5);
     const user = await this.userService.createUser(userDto);
     return this.generateToken(user);
   }
 
-  async generateToken(user: User) {
+  private async generateToken(user: User): Promise<{ token: string }> {
     const payload = { email: user.email, id: user.id };
     return {
       token: this.jwtService.sign(payload),

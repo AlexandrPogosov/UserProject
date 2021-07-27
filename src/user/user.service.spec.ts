@@ -85,6 +85,8 @@ describe('UserService', () => {
     it('should update a User', async () => {
       const user = TestUtil.giveMeValidUser();
       const updateUser = {
+        email: 'ivan@gmail.com',
+        password: '123',
         first_name: 'Ivan',
         last_name: 'Pogosov',
         age: 23,
