@@ -2,6 +2,8 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserProject } from './userProject.entity';
 import { UserProjectService } from './user-project.service';
 import { CreateUserProjectDto } from './dto/create-userProject.dto';
+import { ProjectUsersDto } from './dto/project-users.dto';
+import { UserProjectsDto } from './dto/user-projects.dto';
 
 @Resolver(() => UserProject)
 export class UserProjectResolver {
@@ -12,17 +14,17 @@ export class UserProjectResolver {
     return this.userProjectService.createUserProject(input);
   }
 
-  @Query(() => UserProject)
+  @Query(() => UserProjectsDto)
   async findUserWithProjects(@Args('userId') userId: number) {
     return this.userProjectService.findUserWithProjects(userId);
   }
 
-  @Query(() => UserProject)
+  @Query(() => ProjectUsersDto)
   async findProjectWithUsersByName(@Args('name') name: string) {
     return this.userProjectService.findProjectWithUsersByName(name);
   }
 
-  @Query(() => UserProject)
+  @Query(() => ProjectUsersDto)
   async findProjectWithUsers(@Args('projectId') projectId: number) {
     return this.userProjectService.findProjectWithUsers(projectId);
   }

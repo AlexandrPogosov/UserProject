@@ -1,9 +1,25 @@
-import { IsString, IsNumber, IsDate } from 'class-validator';
+import { IsString, IsNumber, IsEmail, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateUserDTO {
+  @Field()
+  @ApiProperty({
+    type: String,
+  })
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @Field()
+  @ApiProperty({
+    type: String,
+  })
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
   @Field()
   @ApiProperty({
     type: String,

@@ -22,6 +22,8 @@ type UserProject {
 
 type User {
   id: ID!
+  email: String!
+  password: String!
   last_name: String!
   first_name: String!
   date_birthday: String!
@@ -32,6 +34,24 @@ type User {
   userProjectEntity: [UserProject!]
 }
 
+type UserProjectsDto {
+  id: Int!
+  last_name: String!
+  first_name: String!
+  date_birthday: String!
+  age: Int!
+  technology: String!
+  skills: String!
+  projects: [Project!]!
+}
+
+type ProjectUsersDto {
+  id: Int!
+  name: String!
+  company_name: String!
+  users: [User!]!
+}
+
 type Query {
   allUsers: [User!]!
   getUser(userId: Float!): User!
@@ -39,9 +59,9 @@ type Query {
   getProjects: [Project!]!
   getProject(projectId: Float!): Project!
   findProjectsWithUsersAll: [Project!]!
-  findUserWithProjects(userId: Float!): UserProject!
-  findProjectWithUsersByName(name: String!): UserProject!
-  findProjectWithUsers(projectId: Float!): UserProject!
+  findUserWithProjects(userId: Float!): UserProjectsDto!
+  findProjectWithUsersByName(name: String!): ProjectUsersDto!
+  findProjectWithUsers(projectId: Float!): ProjectUsersDto!
 }
 
 type Mutation {
@@ -56,6 +76,8 @@ type Mutation {
 }
 
 input CreateUserDTO {
+  email: String!
+  password: String!
   last_name: String!
   first_name: String!
   date_birthday: String!

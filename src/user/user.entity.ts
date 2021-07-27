@@ -26,41 +26,55 @@ export class User extends BaseEntity {
     type: String,
   })
   @Column()
+  email: string;
+
+  @Field()
+  @ApiProperty({
+    type: String,
+  })
+  @Column()
+  password: string;
+
+  @Field()
+  @ApiProperty({
+    type: String,
+  })
+  @Column({ nullable: true })
   last_name: string;
 
   @Field()
   @ApiProperty({
     type: String,
   })
-  @Column()
+  @Column({ nullable: true })
   first_name: string;
 
   @Field()
   @ApiProperty({
     type: String,
   })
-  @Column()
+  @Column({ nullable: true })
   date_birthday: string;
 
   @Field(() => Int)
   @ApiProperty({
     type: Number,
   })
-  @Column()
+  @Column({ nullable: true })
   age: number;
 
   @Field()
   @ApiProperty({
     type: String,
   })
-  @Column()
+  @Column({ nullable: true })
   technology: string;
 
   @Field()
   @ApiProperty({
     type: String,
   })
-  @Column()
+  @Column({ nullable: true })
   skills: string;
 
   @Field(() => [Project], {
@@ -69,7 +83,7 @@ export class User extends BaseEntity {
   @OneToMany(() => UserProject, (userProject) => userProject.project)
   public projects: Project[];
 
-  @Field((type) => [UserProject], {
+  @Field(() => [UserProject], {
     nullable: true,
   })
   @OneToMany(() => UserProject, (ud) => ud.user)

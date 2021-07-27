@@ -14,6 +14,7 @@ export class UserService {
   ) {}
 
   public async createUser(createUserDto: CreateUserDTO): Promise<User> {
+    console.log(createUserDto);
     return await this.userRepository.createUser(createUserDto);
   }
 
@@ -64,5 +65,13 @@ export class UserService {
 
   public async deleteUser(userId: number): Promise<DeleteResult> {
     return this.userRepository.delete(userId);
+  }
+
+  async getUserByEmail(email: string) {
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+    console.log(user);
+    return user;
   }
 }

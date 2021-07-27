@@ -8,12 +8,14 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { User } from './user.entity';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiForbiddenResponse,
@@ -24,6 +26,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserProjectsDto } from '../user-project/dto/user-projects.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 @Controller('users')
 @ApiTags('Users')
 export class UserController {
@@ -50,6 +53,7 @@ export class UserController {
     return await this.userService.createUser(createUserDto);
   }
 
+
   @ApiOperation({
     summary: 'Get all users in system',
   })
@@ -62,6 +66,8 @@ export class UserController {
     type: Error,
   })
   @Get('')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Header('Cache-Control', 'no-store, no-cache, must-revalidate')
   @Header('Content-Type', 'application/json; charset=UTF-8')
   public async getUsers(): Promise<User[]> {

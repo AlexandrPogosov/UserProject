@@ -13,6 +13,8 @@ export class UserRepository extends Repository<User> {
     user.age = createUser.age;
     user.technology = createUser.technology;
     user.skills = createUser.skills;
+    user.email = createUser.email;
+    user.password = createUser.password;
     await user.save();
     return user;
   }
@@ -28,6 +30,8 @@ export class UserRepository extends Repository<User> {
     editedProduct.age = createUser.age;
     editedProduct.technology = createUser.technology;
     editedProduct.skills = createUser.skills;
+    editedProduct.email = createUser.email;
+    editedProduct.password = createUser.password;
     await editedProduct.save();
     return editedProduct;
   }
